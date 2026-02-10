@@ -3,56 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Data Analyst</title>
+    <title>Portfolio Tulus Budianto</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
-        /* --- CSS UTAMA --- */
-        :root { --bg: #1e1e2e; --sidebar: #252538; --accent: #7b68ee; --text: #e0e0e0; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        /* --- CSS UTAMA (RESET & VARIABLES) --- */
+        :root { 
+            --bg: #1e1e2e; 
+            --sidebar: #252538; 
+            --card-bg: #2d2d44;
+            --accent: #7b68ee; 
+            --text: #e0e0e0; 
+            --text-muted: #a0a0b0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
-        .sidebar { width: 280px; background: var(--sidebar); display: flex; flex-direction: column; border-right: 1px solid #333; }
-        .sidebar-header { padding: 20px; font-weight: bold; color: var(--accent); border-bottom: 1px solid #333; letter-spacing: 1px;}
+        /* --- SIDEBAR --- */
+        .sidebar { width: 280px; background: var(--sidebar); display: flex; flex-direction: column; border-right: 1px solid #333; z-index: 10; }
+        .sidebar-header { 
+            padding: 25px 20px; 
+            font-weight: 800; 
+            color: var(--accent); 
+            border-bottom: 1px solid #333; 
+            letter-spacing: 1px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
         .project-list { padding: 10px; overflow-y: auto; flex: 1; }
 
-        .year-label { font-size: 0.75rem; color: #888; margin: 15px 0 5px 10px; font-weight: bold; text-transform: uppercase; }
+        .year-label { font-size: 0.75rem; color: var(--text-muted); margin: 20px 0 5px 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         
         .nav-item { 
-            padding: 12px 15px; margin-bottom: 5px; cursor: pointer; border-radius: 8px; transition: 0.2s; 
+            padding: 12px 15px; margin: 0 10px 5px 10px; cursor: pointer; border-radius: 8px; transition: 0.2s; 
+            display: flex; flex-direction: column;
         }
         .nav-item:hover { background: rgba(123, 104, 238, 0.1); }
         .nav-item.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(123, 104, 238, 0.4); }
-        .nav-item small { display: block; opacity: 0.7; font-size: 0.75rem; margin-bottom: 2px;}
-        .nav-item strong { font-size: 0.95rem; }
+        .nav-item small { opacity: 0.7; font-size: 0.7rem; margin-bottom: 2px;}
+        .nav-item strong { font-size: 0.9rem; }
 
-        /* MAIN CONTENT */
+        /* Tombol Kembali ke CV */
+        .btn-home {
+            background: rgba(255,255,255,0.05);
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #444;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .btn-home:hover { background: rgba(123, 104, 238, 0.1); border-color: var(--accent); }
+
+        /* --- MAIN CONTENT AREA --- */
         #main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+
+        /* --- DESAIN CV (YANG BARU) --- */
+        .cv-container {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .cv-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 30px;
+        }
         
-        /* Loading & Error */
-        .status-msg { text-align: center; margin-top: 20vh; color: #666; animation: fadeIn 0.5s;}
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Responsive Mobile */
+        .avatar-initial {
+            width: 80px; height: 80px; background: var(--accent); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; margin-right: 25px;
+            box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
+        }
+
+        .cv-name h1 { font-size: 2.5rem; color: white; margin-bottom: 5px; }
+        .cv-name p { color: var(--accent); font-size: 1.1rem; font-weight: 500; }
+
+        /* Grid Layout CV */
+        .cv-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
+
+        /* Section Styles */
+        h3.cv-title { 
+            color: var(--text); 
+            font-size: 1.2rem; 
+            margin-bottom: 15px; 
+            border-left: 4px solid var(--accent); 
+            padding-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-group { margin-bottom: 25px; }
+        .info-label { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 3px; display: block; }
+        .info-value { font-size: 1rem; color: white; font-weight: 500; }
+
+        /* Skill Tags */
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag { 
+            background: rgba(123, 104, 238, 0.15); 
+            color: #b8b2ff; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 0.85rem; border: 1px solid rgba(123, 104, 238, 0.3);
+        }
+        .skill-tag.highlight { background: var(--accent); color: white; border: none; }
+
+        /* Timeline Experience */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 30px;
+            border-left: 2px solid #444;
+        }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -6px; top: 0;
+            width: 10px; height: 10px; background: var(--accent); border-radius: 50%;
+        }
+        .timeline-date { font-size: 0.85rem; color: var(--accent); font-weight: bold; margin-bottom: 5px; display: block; }
+        .timeline-role { font-size: 1.2rem; font-weight: bold; color: white; }
+        .timeline-company { font-size: 1rem; color: var(--text-muted); margin-bottom: 8px; }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .sidebar { width: 80px; }
-            .sidebar-header, .nav-item strong, .year-label { display: none; }
-            .nav-item { text-align: center; padding: 15px 5px; }
-            .nav-item small { font-size: 0.6rem; display: block; }
+            .sidebar { width: 70px; }
+            .sidebar-header span, .nav-item strong, .year-label, .btn-home span { display: none; }
+            .nav-item { padding: 10px 5px; text-align: center; }
+            .cv-grid { grid-template-columns: 1fr; }
+            .cv-header { flex-direction: column; text-align: center; }
+            .avatar-initial { margin: 0 0 20px 0; }
             #main-content { padding: 20px; }
         }
+
+        /* Loading Animation */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .loading { text-align: center; margin-top: 20vh; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-header">MY PORTFOLIO</div>
+        <div class="sidebar-header" onclick="showHome()">
+            TB <span>PORTFOLIO</span>
+        </div>
         
+        <div class="btn-home" onclick="showHome()">
+            🏠 <span>Lihat CV / Home</span>
+        </div>
+
         <div class="project-list">
-            <div class="year-label">2024</div>
+            <div class="year-label">Project 2024</div>
 
             <div class="nav-item" onclick="loadPage('pages/project-1.html', this)">
                 <small>Maret</small>
@@ -68,61 +173,129 @@
     </div>
 
     <main id="main-content">
-        <div class="status-msg">
-            <h2>Selamat Datang</h2>
-            <p>Pilih project di menu kiri untuk melihat detail & grafik.</p>
-        </div>
-    </main>
+        </main>
 
 <script>
-    // --- FUNGSI AJAIB LOAD HALAMAN ---
+    // --- DATA CV (Disimpan dalam Variable agar rapi) ---
+    const cvHTML = `
+        <div class="cv-container">
+            <header class="cv-header">
+                <div class="avatar-initial">TB</div>
+                <div class="cv-name">
+                    <h1>Tulus Budianto</h1>
+                    <p>Field Researcher & Data Specialist</p>
+                </div>
+            </header>
+
+            <div class="cv-grid">
+                <aside>
+                    <div class="info-group">
+                        <h3 class="cv-title">Data Diri</h3>
+                        
+                        <span class="info-label">Tanggal Lahir</span>
+                        <div class="info-value">15 Agustus 1990</div>
+                        <br>
+                        <span class="info-label">Pendidikan Terakhir</span>
+                        <div class="info-value">SMK Maarif Nu 1 Ajibarang</div>
+                    </div>
+
+                    <div class="info-group">
+                        <h3 class="cv-title">Aplikasi Riset</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag highlight">Survey CTO</span>
+                            <span class="skill-tag highlight">Kobotoolbox</span>
+                            <span class="skill-tag highlight">Tangerine</span>
+                        </div>
+                    </div>
+
+                    <div class="info-group">
+                        <h3 class="cv-title">Keahlian Lain</h3>
+                        <div class="skill-tags">
+                            <span class="skill-tag">Ms Office</span>
+                            <span class="skill-tag">Photo Editing</span>
+                            <span class="skill-tag">Video Editing</span>
+                            <span class="skill-tag">Troubleshooting PC</span>
+                            <span class="skill-tag">Jaringan / LAN</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <section>
+                    <h3 class="cv-title">Pengalaman Kerja</h3>
+                    
+                    <div class="timeline-item">
+                        <span class="timeline-date">Juni 2012 - Sekarang</span>
+                        <div class="timeline-role">Staff Research / IT Support</div>
+                        <div class="timeline-company">PT Myriad</div>
+                        <p style="color: #a0a0b0; margin-top: 5px; line-height: 1.5;">
+                            Bertanggung jawab dalam pengelolaan data riset dan memastikan infrastruktur IT berjalan lancar untuk mendukung operasional perusahaan.
+                        </p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-date">Juni 2009 - Juni 2012</span>
+                        <div class="timeline-role">Staff Administrasi / Teknis</div>
+                        <div class="timeline-company">CV Karya Solusi</div>
+                        <p style="color: #a0a0b0; margin-top: 5px; line-height: 1.5;">
+                            Pengalaman awal karir dalam menangani solusi teknis dan kebutuhan klien.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    `;
+
+    // --- FUNGSI UTAMA ---
+
+    // 1. Fungsi Tampilkan CV (Home)
+    function showHome() {
+        // Hapus class 'active' dari semua menu
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        
+        // Masukkan HTML CV ke layar
+        document.getElementById('main-content').innerHTML = cvHTML;
+    }
+
+    // 2. Fungsi Load Project (Fetch)
     async function loadPage(url, element) {
         const container = document.getElementById('main-content');
         
-        // 1. Highlight Menu Aktif
+        // Update menu aktif
         if(element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
         }
 
-        // 2. Tampilkan Loading
-        container.innerHTML = '<div class="status-msg">Memuat data...</div>';
+        container.innerHTML = '<div class="loading">Memuat data project...</div>';
 
         try {
-            // 3. Ambil file HTML
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Halaman tidak ditemukan (Cek nama file!)');
+            if (!response.ok) throw new Error('Halaman tidak ditemukan');
             const html = await response.text();
 
-            // 4. Masukkan HTML ke layar
             container.innerHTML = html;
 
-            // 5. EKSEKUSI SCRIPT (Chart.js)
-            // Browser memblokir script via innerHTML, jadi kita harus "menghidupkannya" manual
+            // Jalankan Script Chart.js
             const scripts = container.querySelectorAll("script");
-            
             scripts.forEach(oldScript => {
                 const newScript = document.createElement("script");
-                // Copy isi script
                 if (oldScript.src) {
                     newScript.src = oldScript.src;
                 } else {
                     newScript.textContent = oldScript.textContent;
                 }
-                // Tempel ke body agar jalan
                 document.body.appendChild(newScript);
-                // Hapus agar tidak menumpuk sampah di DOM
                 oldScript.remove(); 
             });
 
         } catch (error) {
-            container.innerHTML = `<div class="status-msg" style="color:#ff6b6b">
-                <h3>Gagal Memuat 😞</h3>
-                <p>${error.message}</p>
-                <small>Pastikan folder "pages" ada dan nama file benar.</small>
-            </div>`;
+            container.innerHTML = `<div class="loading" style="color:#ff6b6b">Error: ${error.message}</div>`;
         }
     }
+
+    // 3. Jalankan CV saat pertama kali buka
+    showHome();
+
 </script>
 
 </body>
