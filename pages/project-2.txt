@@ -1,0 +1,79 @@
+<style>
+    /* Kita pakai style yang sama, browser akan otomatis handle */
+    .card-project { background: #2d2d44; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideUp 0.4s ease-out; }
+    h1.judul-project { color: #7b68ee; cursor: pointer; display: inline-block; border-bottom: 2px solid transparent; transition: 0.3s; }
+    h1.judul-project:hover { border-bottom-color: #7b68ee; color: white; }
+    .btn-action { margin-top: 15px; padding: 10px 20px; border: 1px solid #7b68ee; background: transparent; color: #7b68ee; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+    .btn-action:hover { background: #7b68ee; color: white; }
+    .chart-wrapper { position: relative; height: 400px; width: 100%; margin-top: 20px; }
+    .hidden { display: none; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div id="p2-summary" class="card-project">
+    <div style="font-size: 0.85rem; color: #888; margin-bottom: 10px;">ID: #SALES-2024</div>
+    
+    <h1 class="judul-project" onclick="toggleP2()">Dashboard Sales UMKM ↗</h1>
+    
+    <div style="margin: 20px 0;">
+        <span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem;">Excel</span>
+        <span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem;">Tableau</span>
+    </div>
+
+    <p style="line-height: 1.6; color: #ccc;">
+        Visualisasi data penjualan UMKM Batik selama satu tahun. 
+        Membantu pemilik bisnis mengidentifikasi produk terlaris berdasarkan demografi pembeli.
+    </p>
+
+    <button class="btn-action" onclick="toggleP2()">Lihat Grafik Performa</button>
+</div>
+
+<div id="p2-chart" class="card-project hidden">
+    <button class="btn-action" style="margin-top:0; margin-bottom:20px;" onclick="toggleP2()">← Kembali ke Summary</button>
+    
+    <h3>Komposisi Penjualan</h3>
+    <div class="chart-wrapper">
+        <canvas id="canvasProject2"></canvas>
+    </div>
+</div>
+
+<script>
+    function toggleP2() {
+        const sum = document.getElementById('p2-summary');
+        const chart = document.getElementById('p2-chart');
+        
+        if (sum.style.display === 'none') {
+            sum.style.display = 'block';
+            chart.style.display = 'none';
+        } else {
+            sum.style.display = 'none';
+            chart.style.display = 'block';
+            renderChartP2(); 
+        }
+    }
+
+    function renderChartP2() {
+        const ctxElement = document.getElementById('canvasProject2');
+        if(!ctxElement) return;
+
+        if (window.myChart2 instanceof Chart) { window.myChart2.destroy(); }
+
+        // CONTOH PIE CHART
+        window.myChart2 = new Chart(ctxElement, {
+            type: 'doughnut', 
+            data: {
+                labels: ['Batik Tulis', 'Batik Cap', 'Aksesoris'],
+                datasets: [{
+                    data: [55, 30, 15],
+                    backgroundColor: ['#7b68ee', '#ff6384', '#36a2eb'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: 'white' } } }
+            }
+        });
+    }
+</script>

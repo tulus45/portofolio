@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Data Analyst</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* --- CSS UTAMA --- */
+        :root { --bg: #1e1e2e; --sidebar: #252538; --accent: #7b68ee; --text: #e0e0e0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        /* SIDEBAR */
+        .sidebar { width: 280px; background: var(--sidebar); display: flex; flex-direction: column; border-right: 1px solid #333; }
+        .sidebar-header { padding: 20px; font-weight: bold; color: var(--accent); border-bottom: 1px solid #333; letter-spacing: 1px;}
+        .project-list { padding: 10px; overflow-y: auto; flex: 1; }
+
+        .year-label { font-size: 0.75rem; color: #888; margin: 15px 0 5px 10px; font-weight: bold; text-transform: uppercase; }
+        
+        .nav-item { 
+            padding: 12px 15px; margin-bottom: 5px; cursor: pointer; border-radius: 8px; transition: 0.2s; 
+        }
+        .nav-item:hover { background: rgba(123, 104, 238, 0.1); }
+        .nav-item.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(123, 104, 238, 0.4); }
+        .nav-item small { display: block; opacity: 0.7; font-size: 0.75rem; margin-bottom: 2px;}
+        .nav-item strong { font-size: 0.95rem; }
+
+        /* MAIN CONTENT */
+        #main-content { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+        
+        /* Loading & Error */
+        .status-msg { text-align: center; margin-top: 20vh; color: #666; animation: fadeIn 0.5s;}
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            .sidebar { width: 80px; }
+            .sidebar-header, .nav-item strong, .year-label { display: none; }
+            .nav-item { text-align: center; padding: 15px 5px; }
+            .nav-item small { font-size: 0.6rem; display: block; }
+            #main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">MY PORTFOLIO</div>
+        
+        <div class="project-list">
+            <div class="year-label">2024</div>
+
+            <div class="nav-item" onclick="loadPage('pages/project-1.html', this)">
+                <small>Maret</small>
+                <strong>Gudang System</strong>
+            </div>
+
+            <div class="nav-item" onclick="loadPage('pages/project-2.html', this)">
+                <small>Januari</small>
+                <strong>Dashboard Sales</strong>
+            </div>
+            
+        </div>
+    </div>
+
+    <main id="main-content">
+        <div class="status-msg">
+            <h2>Selamat Datang</h2>
+            <p>Pilih project di menu kiri untuk melihat detail & grafik.</p>
+        </div>
+    </main>
+
+<script>
+    // --- FUNGSI AJAIB LOAD HALAMAN ---
+    async function loadPage(url, element) {
+        const container = document.getElementById('main-content');
+        
+        // 1. Highlight Menu Aktif
+        if(element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // 2. Tampilkan Loading
+        container.innerHTML = '<div class="status-msg">Memuat data...</div>';
+
+        try {
+            // 3. Ambil file HTML
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Halaman tidak ditemukan (Cek nama file!)');
+            const html = await response.text();
+
+            // 4. Masukkan HTML ke layar
+            container.innerHTML = html;
+
+            // 5. EKSEKUSI SCRIPT (Chart.js)
+            // Browser memblokir script via innerHTML, jadi kita harus "menghidupkannya" manual
+            const scripts = container.querySelectorAll("script");
+            
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement("script");
+                // Copy isi script
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                // Tempel ke body agar jalan
+                document.body.appendChild(newScript);
+                // Hapus agar tidak menumpuk sampah di DOM
+                oldScript.remove(); 
+            });
+
+        } catch (error) {
+            container.innerHTML = `<div class="status-msg" style="color:#ff6b6b">
+                <h3>Gagal Memuat 😞</h3>
+                <p>${error.message}</p>
+                <small>Pastikan folder "pages" ada dan nama file benar.</small>
+            </div>`;
+        }
+    }
+</script>
+
+</body>
+</html>
